@@ -95,6 +95,15 @@ target_compile_options(binding_mri PRIVATE
   -Wno-missing-field-initializers
   -Wno-float-conversion
 )
+# Ensure ruby headers are on the include path even if mri_ruby’s interface dirs don’t propagate
+target_include_directories(binding_mri PRIVATE
+  ${RUBY_INCLUDE_PATH}
+  $<TARGET_PROPERTY:mri_ruby,INTERFACE_INCLUDE_DIRECTORIES>
+)
+
+# Make sure these are cached so subdirectories can consume them reliably
+set(RUBY_INCLUDE_PATH "${RUBY_INCLUDE_PATH}" CACHE STRING "Ruby include dirs")
+set(RUBY_LIBRARY_PATH "${RUBY_LIBRARY_PATH}" CACHE FILEPATH "Ruby library")
 
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "Android")
 if(EXISTS ${LIBFFI_DIR})
